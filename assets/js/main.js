@@ -195,7 +195,7 @@
     const msg  = qs('.form-message');
     if (!form) return;
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name    = form.querySelector('[name="name"]').value.trim();
       const email   = form.querySelector('[name="email"]').value.trim();
@@ -205,28 +205,38 @@
         showMessage(msg, 'Please fill in all fields.', 'error');
         return;
       }
-
       if (!isValidEmail(email)) {
         showMessage(msg, 'Please enter a valid email address.', 'error');
         return;
       }
 
-      // Simulate sending (frontend only)
       const btn = form.querySelector('.form-submit');
-      btn.textContent = 'Sending…';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending…';
       btn.disabled = true;
 
-      setTimeout(() => {
-        form.reset();
-        btn.textContent = 'Send Message';
-        btn.disabled = false;
-        showMessage(
-          msg,
-          "Thanks for reaching out! I'll get back to you soon.",
-          'success'
-        );
-        setTimeout(() => { msg.style.display = 'none'; }, 5000);
-      }, 1200);
+      try {
+        const res = await fetch(form.action, {
+          method:  'POST',
+          headers: { 'Accept': 'application/json' },
+          body:    new FormData(form)
+        });
+
+        if (res.ok) {
+          form.reset();
+          showMessage(msg, "✓ Message sent! I'll get back to you soon.", 'success');
+          setTimeout(() => { msg.style.display = 'none'; }, 6000);
+        } else {
+          const data = await res.json().catch(() => ({}));
+          const errText = data?.errors?.map(e => e.message).join(', ')
+            || 'Something went wrong. Please try again.';
+          showMessage(msg, errText, 'error');
+        }
+      } catch (_) {
+        showMessage(msg, 'Network error — please check your connection.', 'error');
+      }
+
+      btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Message';
+      btn.disabled = false;
     });
   }
 
