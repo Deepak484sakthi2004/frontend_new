@@ -270,7 +270,7 @@
 
   const API_URL     = 'https://ai-backend-new.onrender.com/chat';
   const HEALTH_URL  = 'https://ai-backend-new.onrender.com/health';
-  const QUICK_CHIPS = ['Skills & Tech', 'Projects', 'Education', 'Contact'];
+  const QUICK_CHIPS = ['Skills & Tech', 'Projects', 'Education', 'Resume'];
   const MAX_REQUESTS = 10;
   const SESSION_KEY  = 'dk_chat_count';
 
@@ -505,7 +505,27 @@
       btn.textContent = label;
       btn.addEventListener('click', () => {
         row.remove();
-        handleUserInput(label);
+        if (label === 'Resume') {
+          appendUserMessage('Resume');
+          appendBotMessage("Here's Deepaksakthi's resume — click below to download! 📄");
+          // Inject download link bubble
+          const msgEl = document.createElement('div');
+          msgEl.className = 'chat-msg chat-msg--bot';
+          const a = document.createElement('a');
+          a.href = 'assets/docs/john_doe.pdf';
+          a.download = 'Deepaksakthi_VK_Resume.pdf';
+          a.className = 'chat-resume-link';
+          a.innerHTML = '<i class="fa-solid fa-file-arrow-down"></i> Download Resume';
+          const ts = document.createElement('div');
+          ts.className = 'chat-timestamp';
+          ts.textContent = getTime();
+          msgEl.appendChild(a);
+          msgEl.appendChild(ts);
+          messages.appendChild(msgEl);
+          scrollToBottom();
+        } else {
+          handleUserInput(label);
+        }
       });
       row.appendChild(btn);
     });
@@ -608,7 +628,7 @@
     isOpen = false;
     panel.classList.remove('open');
     panel.setAttribute('aria-hidden', 'true');
-    triggerIcon.className = 'fa-solid fa-comment-dots';
+    triggerIcon.className = "fa-regular fa-message";
   }
 
   /* ── Events ──────────────────────────────────────────────── */
