@@ -268,9 +268,11 @@
 (function () {
   'use strict';
 
-  const API_URL    = 'https://ai-backend-new.onrender.com/chat';
-  const HEALTH_URL = 'https://ai-backend-new.onrender.com/health';
+  const API_URL     = 'https://ai-backend-new.onrender.com/chat';
+  const HEALTH_URL  = 'https://ai-backend-new.onrender.com/health';
   const QUICK_CHIPS = ['Skills & Tech', 'Projects', 'Education', 'Contact'];
+  const MAX_REQUESTS = 10;
+  const SESSION_KEY  = 'dk_chat_count';
 
   /* ── State ───────────────────────────────────────────────── */
   let isOpen        = false;
@@ -454,11 +456,41 @@
     input.focus();
   }
 
+  /* ── Request counter (sessionStorage) ───────────────────── */
+  function getCount()  { return parseInt(sessionStorage.getItem(SESSION_KEY) || '0', 10); }
+  function bumpCount() { sessionStorage.setItem(SESSION_KEY, getCount() + 1); }
+
+  function updateLimitUI() {
+    const used = getCount();
+    const remaining = MAX_REQUESTS - used;
+    const counter = document.getElementById('chat-limit-counter');
+    if (counter) {
+      counter.textContent = `${remaining} / ${MAX_REQUESTS} messages left`;
+      counter.classList.toggle('chat-limit-counter--low', remaining <= 3);
+    }
+    if (remaining <= 0) lockChat();
+  }
+
+  function lockChat() {
+    setInputDisabled(true);
+    const existing = document.getElementById('chat-limit-msg');
+    if (existing) return;
+    const el = document.createElement('div');
+    el.id = 'chat-limit-msg';
+    el.className = 'chat-limit-msg';
+    el.innerHTML = `<i class="fa-solid fa-lock"></i> You've used all <strong>${MAX_REQUESTS}</strong> messages for this session.<br><span>Hard-reload the page to start fresh.</span>`;
+    messages.appendChild(el);
+    scrollToBottom();
+  }
+
   /* ── Handle user input ───────────────────────────────────── */
   function handleUserInput(text) {
     const trimmed = text.trim();
     if (!trimmed || isStreaming) return;
+    if (getCount() >= MAX_REQUESTS) { lockChat(); return; }
     input.value = '';
+    bumpCount();
+    updateLimitUI();
     appendUserMessage(trimmed);
     streamBotResponse(trimmed);
   }
@@ -548,11 +580,18 @@
     panel.setAttribute('aria-hidden', 'false');
     triggerIcon.className = 'fa-solid fa-xmark';
 
+    updateLimitUI();   // sync counter badge on every open
+
     if (!hasOpened) {
       hasOpened = true;
       setTimeout(() => {
+        if (getCount() >= MAX_REQUESTS) {
+          // Already exhausted from a previous session segment
+          appendBotMessage("Hi! 👋 It looks like you've used all your messages this session. Hard-reload the page to start fresh.");
+          lockChat();
+          return;
+        }
         if (serverReady) {
-          // Server was already warm (e.g. user closed & reopened)
           appendBotMessage("Hi there! 👋 I'm Deepaksakthi's AI assistant. Ask me anything about his skills, projects, education, or how to reach him.");
           addQuickChips();
           input.focus();
