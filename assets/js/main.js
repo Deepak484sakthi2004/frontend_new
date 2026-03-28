@@ -99,7 +99,7 @@
     const el    = qs('.hero__typing');
     if (!el) return;
 
-    const words = ['Data Scientist', 'ML Engineer', 'Problem Solver', 'Data Analyst'];
+    const words = ['Backend Engineer', 'AI/ML Engineer', 'SDE @ SuperOps', 'Problem Solver'];
     let wordIdx = 0;
     let charIdx = 0;
     let deleting = false;
