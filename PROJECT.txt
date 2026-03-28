@@ -1,0 +1,223 @@
+================================================================================
+  DEEPAKSAKTHI VELLORE KUMAR — PORTFOLIO
+  Personal Portfolio Website
+================================================================================
+
+LIVE URL
+--------
+  https://frontend-new-roan.vercel.app
+
+GITHUB
+------
+  https://github.com/Deepak484sakthi2004/frontend_new
+
+--------------------------------------------------------------------------------
+ABOUT THE PROJECT
+--------------------------------------------------------------------------------
+
+A single-page personal portfolio for Deepaksakthi Vellore Kumar, a Software
+Development Engineer specialising in Kotlin/Spring Boot backend and AI/ML
+engineering. Built with vanilla HTML, CSS, and JavaScript — no frameworks,
+no build step, no dependencies beyond two CDN links.
+
+--------------------------------------------------------------------------------
+TECH STACK
+--------------------------------------------------------------------------------
+
+Frontend
+  - HTML5 (single page — index.html)
+  - CSS3 (assets/css/main.css) — CSS custom properties, Flexbox, Grid,
+    glassmorphism, Intersection Observer scroll animations
+  - Vanilla JavaScript (assets/js/main.js) — no jQuery, no frameworks
+
+Fonts & Icons
+  - Google Fonts: Inter (300–900)
+  - Font Awesome 6 (CDN)
+
+Hosting
+  - Vercel (production)
+  - GitHub: Deepak484sakthi2004/frontend_new (auto-deploy on push to main)
+
+Backend / Integrations
+  - AI Chatbot API: https://ai-backend-new.onrender.com  (FastAPI + SSE)
+  - Contact Form:   https://formspree.io/f/xlgogwzl
+
+--------------------------------------------------------------------------------
+PROJECT STRUCTURE
+--------------------------------------------------------------------------------
+
+portfolio-page/
+├── index.html                      Single-page portfolio
+├── vercel.json                     Vercel deployment config
+├── .gitignore
+├── PROJECT.txt                     This file
+└── assets/
+    ├── css/
+    │   └── main.css                All styles (theme, layout, components)
+    ├── js/
+    │   └── main.js                 All interactivity + chatbot logic
+    ├── docs/
+    │   └── deepaksakthi_resume.pdf Resume (downloadable)
+    ├── images/
+    │   ├── favicon.png
+    │   ├── home/                   Hero section assets
+    │   ├── designs/
+    │   │   ├── ui_ux/              UI/UX design samples (8)
+    │   │   └── mockups/            Mockup design samples (8)
+    │   └── education-page/         Education section assets
+    └── fonts/
+        └── Agustina.woff           Custom display font
+
+--------------------------------------------------------------------------------
+DESIGN SYSTEM
+--------------------------------------------------------------------------------
+
+Color Palette
+  Background       #08080c  (near black, cool blue tint)
+  Surface          rgba(255,255,255,0.03)
+  Border           rgba(255,255,255,0.07)
+  Primary          #818cf8  (indigo-400)
+  Primary Dark     #6366f1  (indigo-500)
+  Accent           #c084fc  (violet-400)
+  Sky Blue         #38bdf8
+  Pink             #f472b6
+  Text             #f1f5f9
+  Text Muted       #94a3b8
+  Gradient         linear-gradient(135deg, #6366f1, #c084fc)
+
+Typography
+  Font:            Inter (Google Fonts)
+  Heading weight:  700–900
+  Letter spacing:  -0.02em to -0.05em (tight, modern)
+  Body line-height: 1.7
+
+Key CSS Utilities
+  .glass           Glassmorphism card base
+  .gradient-text   Indigo→violet gradient text
+  .reveal          Scroll-triggered fade-in (Intersection Observer)
+  .reveal-left     Slide in from left
+  .reveal-right    Slide in from right
+  .stagger         Staggered children animation
+
+--------------------------------------------------------------------------------
+SECTIONS
+--------------------------------------------------------------------------------
+
+1. Navigation
+   Fixed top navbar, smooth scroll, active link highlighting,
+   hamburger menu for mobile.
+
+2. Hero
+   Name, animated typing subtitle (Backend Engineer / AI/ML Engineer /
+   SDE @ SuperOps / Problem Solver), tagline, CTA buttons, social links.
+
+3. About
+   Bio, stats (8.19 GPA / 1.7 Yrs / 1000+ Users / 5+ Projects),
+   highlights (location, role, email, availability).
+
+4. Skills
+   Languages & Backend · Frameworks & DBs · AI/ML & Messaging ·
+   Tools & Practices
+
+5. Experience (5 roles)
+   SDE @ SuperOps · SDE Intern @ SuperOps · AI/ML Intern @ ToToys AI ·
+   Fullstack AI Intern @ KoworkerAI · Data Science Trainee @ Innomatics
+
+6. Education (2 entries)
+   B.Tech IT — St. Joseph's College of Engineering (GPA 8.19)
+   High School — Sri Chaitanya Techno Schools (93.8%)
+
+7. Projects (5)
+   CRM eLearning Platform · AI Flashcard Notes App · RAG Personal Chatbot ·
+   Character-Level GPT · Movie Review App
+
+8. Design Gallery
+   UI/UX and mockup design samples with lightbox viewer.
+
+9. Contact
+   Formspree-powered form (POST to https://formspree.io/f/xlgogwzl),
+   social links.
+
+10. AI Chatbot (floating, bottom-right)
+    See section below.
+
+--------------------------------------------------------------------------------
+AI CHATBOT
+--------------------------------------------------------------------------------
+
+Trigger
+  Floating button (bottom-right), icon: fa-regular fa-message.
+  Opens/closes panel on click. Escape key closes panel.
+
+Wake-up Flow
+  On first open, polls GET https://ai-backend-new.onrender.com/health
+  every 4 seconds. Shows animated spinner ("Waking up server...") while
+  Render instance cold-starts (~2 min). Chat input stays disabled until
+  health check returns {"status": "ok"}.
+
+Messaging
+  POST https://ai-backend-new.onrender.com/chat
+  Body: { "messages": [ {role, content}, ... ] }
+  Response: Server-Sent Events (SSE)
+    data: {"type": "delta", "content": "..."}   — streamed text
+    data: {"type": "done"}                       — end of stream
+
+  Text streams in real-time into the bot bubble.
+  Markdown rendered: **bold**, bullet lists (- item), line breaks.
+  Full conversation history maintained for multi-turn context.
+
+Rate Limit
+  10 messages per session (sessionStorage counter).
+  Counter badge in chat header counts down.
+  Turns pink at ≤ 3 remaining.
+  Locks input at 0 with a friendly message.
+  Hard reload resets the counter (sessionStorage clears automatically).
+
+Quick Reply Chips
+  Skills & Tech · Projects · Education · Resume
+  Resume chip triggers a direct PDF download link (no API call consumed).
+
+--------------------------------------------------------------------------------
+CONTACT FORM
+--------------------------------------------------------------------------------
+
+Provider:   Formspree
+Endpoint:   https://formspree.io/f/xlgogwzl
+Method:     POST (fetch, no page reload)
+Fields:     name, email, message
+On success: Inline success message, form resets
+On error:   Formspree error messages displayed inline
+
+--------------------------------------------------------------------------------
+DEPLOYMENT
+--------------------------------------------------------------------------------
+
+Vercel (Production)
+  Live URL:    https://frontend-new-roan.vercel.app
+  Project:     frontend-new
+  Config:      vercel.json (static build, security headers, 1-yr asset cache)
+  Auto-deploy: Yes — pushes to main branch trigger redeploy
+
+Security Headers (via vercel.json)
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+
+Asset Caching
+  /assets/* → Cache-Control: public, max-age=31536000, immutable
+
+Manual Deploy (Vercel CLI)
+  cd portfolio-page
+  npx vercel --prod --yes
+
+--------------------------------------------------------------------------------
+CONTACT
+--------------------------------------------------------------------------------
+
+  Email:    deepak2004sakthi@gmail.com
+  LinkedIn: https://www.linkedin.com/in/deepaksakthi-v-k/
+  GitHub:   https://github.com/Deepak484sakthi2004
+  Kaggle:   https://www.kaggle.com/deepaksakthivk
+
+================================================================================
